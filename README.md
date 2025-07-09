@@ -33,12 +33,6 @@ MassMailer is a lightweight micro‑app that lets you send personalised mail mer
 
 MassMailer is a pure front‑end application. All templates, CSV files and generated emails are stored **only** in your browser’s local storage and are never transmitted to any server. Clear your cache to remove all traces.
 
-## Roadmap
-
-* Rich‑text placeholder helper
-* Support for multiple attachments
-* Native SMTP option
-
 ## License
 
 MIT © Marcel Lehmann
