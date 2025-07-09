@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="app_title">MassMailer Mini-App</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Quill CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <header class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="bi bi-envelope-arrow-up-fill me-2" style="color: #38c9c3;"></i><span data-i18n="app_title">MassMailer Mini-App</span></h1>
+            <div>
+                <div class="dropdown d-inline-block me-2">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-translate me-1"></i> <span id="currentLanguage">English</span>
+                    </button>
+                    <ul class="dropdown-menu" id="languageMenu" aria-labelledby="languageDropdown">
+                        <!-- Languages will be populated dynamically -->
+                    </ul>
+                </div>
+                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#settingsModal">
+                    <i class="bi bi-gear-fill"></i> <span data-i18n="settings">Settings</span>
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <!-- Step 1: CSV Import & Template Selection -->
+            <section id="step1" class="mb-4 card p-3">
+                <h2 data-i18n="step1">Step 1: Data & Template</h2>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="dataFile" class="form-label" data-i18n="import_file">Import File (Excel or CSV)</label>
+                        <input class="form-control" type="file" id="dataFile" accept=".xlsx,.xls,.csv">
+                        <div class="form-text" data-i18n="file_support">Supports Excel (.xlsx, .xls) and CSV files.</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="templateSelect" class="form-label" data-i18n="select_template">Select Template</label>
+                        <div class="input-group">
+                            <select class="form-select" id="templateSelect">
+                                <option selected disabled value="" data-i18n="please_choose">Please choose...</option>
+                                <!-- Templates will be loaded dynamically -->
+                            </select>
+                            <button class="btn btn-outline-secondary" type="button" id="loadTemplateBtn" data-i18n-title="load_template" title="Load template"><i class="bi bi-arrow-down-circle"></i></button>
+                            <button class="btn btn-outline-success" type="button" id="saveTemplateBtn" data-i18n-title="save_template" title="Save current entries as new template"><i class="bi bi-save"></i></button>
+                             <button class="btn btn-outline-primary" type="button" id="copyTemplateBtn" data-i18n-title="copy_template" title="Copy selected template"><i class="bi bi-copy"></i></button>
+                            <button class="btn btn-outline-danger" type="button" id="deleteTemplateBtn" data-i18n-title="delete_template" title="Delete selected template"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 2: Editor -->
+            <section id="step2" class="mb-4 card p-3" style="display: none;">
+                <h2 data-i18n="step2">Step 2: Create Email</h2>
+                 <div class="row">
+                     <div class="col-md-3">
+                         <h5 data-i18n="available_placeholders">Available Placeholders</h5>
+                         <div id="placeholderTags" class="list-group list-group-flush placeholder-tags-container">
+                             <!-- Placeholders will be inserted dynamically -->
+                             <small class="text-muted" data-i18n="placeholders_available">Available after CSV import.</small>
+                         </div>
+                     </div>
+                     <div class="col-md-9">
+                        <div class="mb-3">
+                            <label for="subject" class="form-label" data-i18n="subject">Subject</label>
+                            <input type="text" class="form-control" id="subject" data-i18n="subject_placeholder" placeholder="Your subject here...">
+                        </div>
+                        <div class="mb-3">
+                             <label class="form-label" data-i18n="message">Message</label>
+                             <div id="editor" style="height: 250px;"></div>
+                             <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" role="switch" id="plainTextSwitch">
+                                <label class="form-check-label" for="plainTextSwitch" data-i18n="send_plaintext">Send as plain text</label>
+                              </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="attachments" class="form-label" data-i18n="attachments">Attachments</label>
+                            <input class="form-control" type="file" id="attachments" multiple>
+                            <ul id="attachmentList" class="list-group mt-2"></ul>
+                        </div>
+                        <button class="btn btn-primary" id="previewBtn"><i class="bi bi-eye-fill me-1"></i> <span data-i18n="generate_preview">Generate Preview</span></button>
+                     </div>
+                 </div>
+            </section>
+
+            <!-- Step 3: Preview & Send -->
+             <section id="step3" class="mb-4 card p-3" style="display: none;">
+                <h2 data-i18n="step3">Step 3: Preview & Send</h2>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <button class="btn btn-outline-secondary" id="prevRecipientBtn" disabled><i class="bi bi-chevron-left"></i></button>
+                        <span class="mx-2"><span data-i18n="recipient">Recipient</span> <span id="currentRecipientIndex">1</span> / <span id="totalRecipients">0</span></span>
+                        <button class="btn btn-outline-secondary" id="nextRecipientBtn" disabled><i class="bi bi-chevron-right"></i></button>
+                    </div>
+                    <div>
+                        <button class="btn btn-success" id="sendBtn" disabled><i class="bi bi-send-fill me-1"></i> <span data-i18n="send_webhook">Send to Webhook</span></button>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <strong data-i18n="to">To:</strong> <span id="previewTo"></span><br>
+                        <strong data-i18n="subject">Subject:</strong> <span id="previewSubject"></span>
+                    </div>
+                    <div class="card-body">
+                        <div id="previewBody" style="border: 1px solid #ccc; padding: 10px; min-height: 150px; max-height: 300px; overflow-y: auto;"></div>
+                    </div>
+                     <div class="card-footer" id="previewAttachmentsFooter">
+                        <strong data-i18n="attachments">Attachments:</strong> <span id="previewAttachments" data-i18n="none">None</span>
+                    </div>
+                </div>
+                <div id="sendProgress" class="mt-3" style="display: none;">
+                    <h5 data-i18n="send_progress">Send Progress</h5>
+                    <div class="progress" role="progressbar" aria-label="Send Progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%">0%</div>
+                    </div>
+                    <div id="sendStatusLog" class="mt-2" style="max-height: 150px; overflow-y: auto; font-size: 0.9em; border: 1px solid #eee; padding: 5px;"></div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Settings Modal -->
+        <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="settingsModalLabel"><i class="bi bi-gear-fill"></i> <span data-i18n="settings">Settings</span></h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="languageSelect" class="form-label" data-i18n="language">Language</label>
+                            <select class="form-select" id="languageSelect">
+                                <!-- Languages will be populated dynamically -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="webhookUrl" class="form-label" data-i18n="webhook_url">Webhook URL (make.com / n8n)</label>
+                            <input type="url" class="form-control" id="webhookUrl" placeholder="https://hook.make.com/...">
+                        </div>
+                        <div class="mb-3">
+                            <label for="defaultSender" class="form-label" data-i18n="default_sender">Default Sender (if needed by webhook)</label>
+                            <input type="email" class="form-control" id="defaultSender" placeholder="no-reply@company.com">
+                        </div>
+                         <div class="mb-3">
+                            <label for="webhookTimeout" class="form-label" data-i18n="webhook_timeout">Webhook Timeout (seconds)</label>
+                            <input type="number" class="form-control" id="webhookTimeout" value="30" min="5">
+                        </div>
+                        <hr>
+                        <h5 data-i18n="data_management">Data Management</h5>
+                        <div class="d-grid gap-2">
+                             <button class="btn btn-secondary" id="exportDataBtn"><i class="bi bi-box-arrow-up me-1"></i> <span data-i18n="export_settings">Export Settings & Templates</span></button>
+                             <label class="btn btn-secondary" for="importDataInput"><i class="bi bi-box-arrow-down me-1"></i> <span data-i18n="import_settings">Import Settings & Templates</span>
+                                <input type="file" id="importDataInput" accept=".json" style="display: none;">
+                             </label>
+                             <button class="btn btn-danger" id="clearDataBtn"><i class="bi bi-trash3-fill me-1"></i> <span data-i18n="delete_data">Delete All Local Data</span></button>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="close">Close</button>
+                        <button type="button" class="btn btn-primary" id="saveSettingsBtn" data-i18n="save">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Container for Notifications -->
+        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+          <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+              <strong class="me-auto toast-title" data-i18n="notification">Notification</strong>
+              <small class="toast-time" data-i18n="now">Now</small>
+              <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+              <!-- Message will be inserted here -->
+            </div>
+          </div>
+        </div>
+
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Papa Parse JS -->
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <!-- SheetJS (xlsx) -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- Quill JS -->
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+    <!-- Mustache JS -->
+    <script src="https://cdn.jsdelivr.net/npm/mustache@4.2.0/mustache.min.js"></script>
+    <!-- Custom JS -->
+    <script src="js/storage.js"></script>
+    <script src="js/language.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

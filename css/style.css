@@ -1,0 +1,99 @@
+/* General Styles & Corporate Branding */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #333;
+}
+
+.btn-primary {
+    background-color: #38c9c3;
+    border-color: #38c9c3;
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+    background-color: #2daca6;
+    border-color: #2daca6;
+}
+
+.btn-outline-primary {
+    color: #38c9c3;
+    border-color: #38c9c3;
+}
+
+.btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active {
+    background-color: #38c9c3;
+    border-color: #38c9c3;
+    color: #fff;
+}
+
+a {
+    color: #38c9c3;
+}
+
+a:hover {
+    color: #2daca6;
+}
+
+/* Specific Component Styles */
+.placeholder-tags-container {
+    max-height: 300px; /* Adjust as needed */
+    overflow-y: auto;
+    border: 1px solid #eee;
+    padding: 10px;
+    background-color: #f8f9fa;
+}
+
+.placeholder-tag {
+    cursor: pointer;
+    user-select: none; /* Prevent text selection on double click */
+    transition: background-color 0.2s ease-in-out;
+}
+
+.placeholder-tag:hover {
+    background-color: #e9ecef;
+}
+
+#attachmentList .list-group-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#attachmentList .btn-close {
+    padding: 0.25rem 0.5rem; /* Smaller close button */
+}
+
+#previewBody img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Ensure Quill toolbar is visible */
+.ql-toolbar {
+    border-top-left-radius: var(--bs-border-radius);
+    border-top-right-radius: var(--bs-border-radius);
+}
+.ql-container {
+     border-bottom-left-radius: var(--bs-border-radius);
+    border-bottom-right-radius: var(--bs-border-radius);
+}
+
+/* Toast Styling */
+.toast-header {
+    color: #fff;
+}
+.toast.bg-success .toast-header {
+    background-color: var(--bs-success);
+}
+.toast.bg-danger .toast-header {
+    background-color: var(--bs-danger);
+}
+.toast.bg-warning .toast-header {
+    background-color: var(--bs-warning);
+     color: #000; /* Better contrast for warning */
+}
+.toast.bg-info .toast-header {
+    background-color: var(--bs-info);
+}
