@@ -1,0 +1,359 @@
+{
+    "name": "wf - MassMailer",
+    "flow": [
+        {
+            "id": 1,
+            "module": "gateway:CustomWebHook",
+            "version": 1,
+            "parameters": {
+                "hook": 2239368,
+                "maxResults": 1
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 0
+                },
+                "restore": {
+                    "parameters": {
+                        "hook": {
+                            "data": {
+                                "editable": "true"
+                            },
+                            "label": "MassMailer"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "hook",
+                        "type": "hook:gateway-webhook",
+                        "label": "Webhook",
+                        "required": true
+                    },
+                    {
+                        "name": "maxResults",
+                        "type": "number",
+                        "label": "Maximum number of results"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 3,
+            "module": "builtin:BasicFeeder",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "array": "{{1.messages}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 513,
+                    "y": 3
+                },
+                "restore": {
+                    "expect": {
+                        "array": {
+                            "mode": "edit"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "mode": "edit",
+                        "name": "array",
+                        "spec": [],
+                        "type": "array",
+                        "label": "Array"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 2,
+            "module": "microsoft-email:createAndSendAMessage",
+            "version": 2,
+            "parameters": {
+                "__IMTCONN__": 2040728
+            },
+            "mapper": {
+                "content": "{{3.html}}",
+                "subject": "{{3.subject}}",
+                "attachments": "{{1.attachments}}",
+                "contentType": "html",
+                "toRecipients": [
+                    {
+                        "address": "{{3.to}}"
+                    }
+                ],
+                "singleValueExtendedProperties": {}
+            },
+            "metadata": {
+                "designer": {
+                    "x": 957,
+                    "y": 2
+                },
+                "restore": {
+                    "expect": {
+                        "from": {
+                            "mode": "chose"
+                        },
+                        "replyTo": {
+                            "mode": "chose"
+                        },
+                        "importance": {
+                            "mode": "chose",
+                            "label": "Empty"
+                        },
+                        "attachments": {
+                            "mode": "edit"
+                        },
+                        "contentType": {
+                            "mode": "chose",
+                            "label": "HTML"
+                        },
+                        "ccRecipients": {
+                            "mode": "chose"
+                        },
+                        "toRecipients": {
+                            "mode": "chose",
+                            "items": [
+                                null
+                            ]
+                        },
+                        "bccRecipients": {
+                            "mode": "chose"
+                        },
+                        "internetMessageHeaders": {
+                            "mode": "chose"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "azure"
+                            },
+                            "label": "My Microsoft connection (Marcel Lehmann)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:azure",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "subject",
+                        "type": "text",
+                        "label": "Subject",
+                        "required": true
+                    },
+                    {
+                        "name": "contentType",
+                        "type": "select",
+                        "label": "Body Content Type",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "html",
+                                "text"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "content",
+                        "type": "text",
+                        "label": "Body Content",
+                        "required": true
+                    },
+                    {
+                        "name": "importance",
+                        "type": "select",
+                        "label": "Importance",
+                        "validate": {
+                            "enum": [
+                                "Low",
+                                "Normal",
+                                "High"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "toRecipients",
+                        "spec": [
+                            {
+                                "name": "address",
+                                "type": "email",
+                                "label": "Email Address",
+                                "required": true
+                            },
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "To Recipients",
+                        "required": true
+                    },
+                    {
+                        "name": "from",
+                        "spec": [
+                            {
+                                "name": "address",
+                                "type": "email",
+                                "label": "Email Address",
+                                "required": true
+                            },
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "From",
+                        "validate": {
+                            "maxItems": 1
+                        }
+                    },
+                    {
+                        "name": "ccRecipients",
+                        "spec": [
+                            {
+                                "name": "address",
+                                "type": "email",
+                                "label": "Email Address",
+                                "required": true
+                            },
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "CC Recipients"
+                    },
+                    {
+                        "name": "bccRecipients",
+                        "spec": [
+                            {
+                                "name": "address",
+                                "type": "email",
+                                "label": "Email Address",
+                                "required": true
+                            },
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Bcc Recipients"
+                    },
+                    {
+                        "name": "replyTo",
+                        "spec": [
+                            {
+                                "name": "address",
+                                "type": "email",
+                                "label": "Email Address",
+                                "required": true
+                            },
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Reply To"
+                    },
+                    {
+                        "name": "attachments",
+                        "spec": [
+                            {
+                                "name": "filename",
+                                "type": "filename",
+                                "label": "File Name",
+                                "required": true,
+                                "semantic": "file:name"
+                            },
+                            {
+                                "name": "data",
+                                "type": "buffer",
+                                "label": "Data",
+                                "required": true,
+                                "semantic": "file:data"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Attachments"
+                    },
+                    {
+                        "name": "internetMessageHeaders",
+                        "spec": [
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name",
+                                "required": true
+                            },
+                            {
+                                "name": "value",
+                                "type": "text",
+                                "label": "Value",
+                                "required": true
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Internet Message Headers"
+                    },
+                    {
+                        "name": "singleValueExtendedProperties",
+                        "spec": [
+                            {
+                                "name": "sensitivityLabel",
+                                "type": "text",
+                                "label": "Sensitivity Label"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Extended MAPI Properties"
+                    }
+                ]
+            }
+        }
+    ],
+    "metadata": {
+        "instant": true,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu2.make.com",
+        "notes": []
+    }
+}
