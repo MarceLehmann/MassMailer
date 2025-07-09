@@ -1,6 +1,6 @@
 # MassMailer 📨
 
-> **Live app:** [MassMailer on GitHub Pages](https://marcelehmann.github.io/MassMailer/)
+> **Live app:** [MassMailer on GitHub Pages](https://marcelehmann.github.io/Tools-MassMailer/)/)
 
 MassMailer is a lightweight micro‑app that lets you send personalised mail merges straight from any CSV file in under a minute. **No installation, no backend — everything runs 100 % in your browser.**
 
@@ -18,14 +18,14 @@ MassMailer is a lightweight micro‑app that lets you send personalised mail mer
 
 ## Get started in 3 steps
 
-1. **Open the app** → [https://marcelehmann.github.io/MassMailer/](https://marcelehmann.github.io/MassMailer/)
+1. **Open the app** → [https://marcelehmann.github.io/Tools-MassMailer/](https://marcelehmann.github.io/Tools-MassMailer/)
 2. **Upload your CSV** with the columns you want to use as placeholders.
 3. **Compose & preview** your email, then press **Send** (or **Generate Preview**).
 
 ### Optional: Automate sending with Make.com
 
 1. Download the blueprint:
-   [https://github.com/MarceLehmann/MassMailer/blob/main/Make.com%20JSON/wf%20-%20MassMailer.blueprint.json](https://github.com/MarceLehmann/MassMailer/blob/main/Make.com%20JSON/wf%20-%20MassMailer.blueprint.json)
+   [https://github.com/MarceLehmann/Tools-MassMailer/blob/main/Make.com%20JSON/wf%20-%20MassMailer.blueprint.json](https://github.com/MarceLehmann/MassMailer/blob/main/Make.com%20JSON/wf%20-%20MassMailer.blueprint.json)
 2. Import it into Make.com and connect your Microsoft 365 (Outlook) account.
 3. Copy the webhook URL from Make.com and paste it into the *Settings* pane of MassMailer.
 
